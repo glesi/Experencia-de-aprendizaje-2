@@ -1,29 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Finanzas App')</title>
-    @vite('resources/css/app.css')
+    <title>{{ config('app.name', 'Sistema de Finanzas') }}</title>
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{{ url('/') }}">Finanzas App</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ml-auto">
-                @guest
-                    <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">Register</a></li>
-                @else
-                    <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}">Logout</a></li>
-                @endguest
-            </ul>
+    @auth
+        <div class="wrapper">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="logo-details">
+                    <span class="logo_name">{{ config('app.name', 'Sistema de Finanzas') }}</span>
+                </div>
+                <nav class="nav flex-column mt-4">
+                    <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
+                        <i class='bx bxs-dashboard'></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="{{ route('incomes.create') }}" class="nav-link {{ request()->routeIs('incomes.create') ? 'active' : '' }}">
+                        <i class='bx bx-plus-circle'></i>
+                        <span>Registrar Entrada</span>
+                    </a>
+                    <a href="{{ route('expenses.create') }}" class="nav-link {{ request()->routeIs('expenses.create') ? 'active' : '' }}">
+                        <i class='bx bx-minus-circle'></i>
+                        <span>Registrar Salida</span>
+                    </a>
+                    <a href="{{ route('incomes.index') }}" class="nav-link {{ request()->routeIs('incomes.index') ? 'active' : '' }}">
+                        <i class='bx bx-money'></i>
+                        <span>Ver Entradas</span>
+                    </a>
+                    <a href="{{ route('expenses.index') }}" class="nav-link {{ request()->routeIs('expenses.index') ? 'active' : '' }}">
+                        <i class='bx bx-receipt'></i>
+                        <span>Ver Salidas</span>
+                    </a>
+                    <a href="{{ route('reports.index') }}" class="nav-link {{ request()->routeIs('reports.index') ? 'active' : '' }}">
+                        <i class='bx bx-line-chart'></i>
+                        <span>Balance</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="main-wrapper">
+                <!-- Navbar -->
+                <nav class="navbar navbar-expand-lg">
+                    <div class="container-fluid">
+                        <div class="dropdown ms-auto">
+                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                {{ Auth::user()->name }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">Cerrar Sesión</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Main Content -->
+                <main class="main-content">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @yield('content')
+                </main>
+            </div>
         </div>
-    </nav>
-    <main class="container mt-5">
-        @yield('content')
-    </main>
-    @vite('resources/js/app.js')
+    @else
+        <main>
+            @yield('content')
+        </main>
+    @endauth
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @stack('scripts')
 </body>
 </html>
