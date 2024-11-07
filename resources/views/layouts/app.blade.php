@@ -6,6 +6,7 @@
     <title>{{ config('app.name', 'Sistema de Finanzas') }}</title>
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 </head>
 <body>
     @auth
@@ -48,17 +49,17 @@
                 <nav class="navbar navbar-expand-lg">
                     <div class="container-fluid">
                         <div class="dropdown ms-auto">
-                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <button class="btn" type="button" data-bs-toggle="dropdown">
                                 {{ Auth::user()->name }}
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item">Cerrar Sesión</button>
-                                    </form>
-                                </li>
-                            </ul>
+                        </div>
+                        <div>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                                <button type="submit" class="dropdown-item">
+                                    <span class="material-symbols-outlined">logout</span>
+                                </button>
+                        </form>
                         </div>
                     </div>
                 </nav>
